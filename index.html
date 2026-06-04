@@ -266,7 +266,7 @@
     let globalData = {};
 
     // 🔴 IMPORTANT: Replace this URL with your new Google Apps Script Web App URL!
-    const GAS_API_URL = "YOUR_GOOGLE_WEB_APP_URL_HERE"; 
+    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbz9lsMEoxSdhndLKhQCdIEvPj4wNXrq-JzXyXsy4YGvSNQjcT5G0yDcHVNVnbw4x5ce/exec"; 
 
     function getDirectImageUrl(url) {
       if (!url) return "";
@@ -295,7 +295,7 @@
 
     // UPDATED: Now uses standard JS fetch API instead of google.script.run
     function fetchData(callback) {
-      if (GAS_API_URL === "https://script.googleusercontent.com/macros/echo?user_content_key=AUkAhnT5biiXSjgJt5DdbG2sPvVPj84D1E2RYDJQXmOqBDayqKPfeeqi7K3zgl-8SDtuA9GPG3x7MqjUY7X-pv_ZJzPH09Nh9P55lbViVlyMrHce7sJr_L0RADlLIKcdKILocdZA02Po8mNbA8AtNjz26aSM0zHFZiuRWur_nCt3Clvj4c908OPrhsOHMAt0ChpOqoHcaqPkick7luAwo0cwJafrJ4p9wJ-KmJ7H_0MY9K0crgQnyauyNVIT1boJ6wQz2mVuYM5YaoTJTJowEg2TzfaLc08JXg&lib=MrsK9NiLAD-wv1SvdSOX5fWvSWZHxqm5s") {
+      if (GAS_API_URL === "YOUR_GOOGLE_WEB_APP_URL_HERE") {
          document.getElementById('sectionTitle').textContent = "ERROR: Setup Required";
          document.getElementById('sectionSelect').innerHTML = '<option>Error</option>';
          alert("You must replace YOUR_GOOGLE_WEB_APP_URL_HERE in the code with your actual Google Apps Script URL!");
