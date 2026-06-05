@@ -1,475 +1,53 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Official List of Students</title>
-  <style>
-    /* CSS Reset & Basic Setup */
-    * { box-sizing: border-box; }
-    body {
-      background-color: #f0f2f5;
-      font-family: 'Arial', sans-serif;
-      margin: 0;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    /* Screen UI Controls (Hidden during print) */
-    .controls {
-      background: white;
-      padding: 15px 25px;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
-      display: flex;
-      gap: 15px;
-      align-items: center;
-      width: 100%;
-      max-width: 800px;
-      flex-wrap: wrap;
-    }
-    select, button {
-      padding: 8px 12px;
-      font-size: 14px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    button {
-      background-color: #1a73e8;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-    }
-    button:hover { background-color: #1557b0; }
-    button:disabled { background-color: #9aa0a6; cursor: not-allowed; }
-    #excelBtn { background-color: #107c41; } /* Excel Green */
-    #excelBtn:hover { background-color: #0c5e31; }
-
-    /* Print Page Settings */
-    @page {
-      size: A4;
-      margin: 0.75in; /* Strictly enforces 0.75 inch margins on all sides when printing */
-    }
-
-    /* A4 Paper Template (Responsive on Screen) */
-    .document-page {
-      background: white;
-      width: 100%; /* Adapts to container */
-      max-width: 210mm; /* Caps at A4 width for screens */
-      min-height: 297mm;
-      padding: 0.75in; /* 0.75 inch padding visually on screen */
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      position: relative;
-    }
-
-    /* Header Styling */
-    .header-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-    .logo {
-      width: 80px;
-      height: 80px;
-      object-fit: contain;
-    }
-
-    /* STRICT REQUIREMENT: Single spacing, 0 before and 0 after */
-    .center-text {
-      text-align: center;
-      flex-grow: 1;
-    }
-    .center-text p {
-      margin: 0px !important;
-      padding: 0px !important;
-      line-height: 1 !important;
-      font-size: 11pt;
-    }
-    
-    /* Specific text weights based on the reference */
-    .txt-deped { font-weight: bold; font-size: 12pt !important; margin-top: 5px !important;}
-    .txt-school { font-weight: bold; font-size: 13pt !important; margin-top: 5px !important;}
-    .txt-sy { margin-top: 5px !important; }
-    
-    .section-title {
-      text-align: center;
-      font-weight: bold;
-      font-size: 12pt;
-      margin: 20px 0;
-      text-transform: uppercase;
-    }
-
-    /* Lists Container */
-    .lists-container {
-      display: flex;
-      width: 100%;
-      gap: 40px;
-      margin-top: 20px;
-    }
-    .list-col {
-      flex: 1;
-    }
-    .list-header {
-      font-weight: bold;
-      margin-bottom: 10px;
-      border-bottom: 1px solid #000;
-      padding-bottom: 2px;
-    }
-    .student-item {
-      margin: 0;
-      padding: 2px 0;
-      font-size: 11pt;
-      line-height: 1.2;
-    }
-
-    /* Signatories Footer */
-    .footer {
-      margin-top: 60px;
-      display: flex;
-      justify-content: space-between;
-    }
-    .signatory {
-      width: 45%;
-    }
-    .signatory p {
-      margin: 0;
-      padding: 0;
-      line-height: 1;
-      text-align: center;
-    }
-    .signatory .name {
-      font-weight: bold;
-      margin-bottom: 2px !important;
-      text-transform: uppercase;
-    }
-    .signatory .title {
-      border-top: 1px solid #000;
-      padding-top: 2px !important;
-      font-size: 10pt;
-    }
-
-    /* Responsive adjustments for mobile screens */
-    @media screen and (max-width: 600px) {
-      body { padding: 10px; }
-      .document-page { 
-        padding: 15px; 
-        min-height: auto; 
-      }
-      .logo { width: 55px; height: 55px; }
-      .center-text p { font-size: 9pt; }
-      .txt-deped { font-size: 10pt !important; }
-      .txt-school { font-size: 11pt !important; }
-      .section-title { font-size: 11pt; margin: 15px 0; }
-      .lists-container { gap: 15px; }
-      .student-item { font-size: 9.5pt; }
-      .footer { margin-top: 40px; }
-    }
-
-    /* Print Styles to hide UI and enforce exact physical formatting */
-    @media print {
-      body { background: white; padding: 0; margin: 0; }
-      .controls { display: none !important; }
-      .document-page { 
-        box-shadow: none; 
-        padding: 0; 
-        width: 100%; 
-        max-width: none;
-        min-height: auto;
-      }
-      .logo { width: 80px; height: 80px; }
-      .center-text p { font-size: 11pt; }
-      .txt-deped { font-size: 12pt !important; }
-      .txt-school { font-size: 13pt !important; }
-      .student-item { font-size: 11pt; }
-      .lists-container { gap: 40px; }
-    }
-  </style>
-
-  <!-- External Libraries for Excel Export -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-</head>
-<body>
-
-  <!-- App Controls -->
-  <div class="controls no-print">
-    <label for="sectionSelect"><strong>Select Section:</strong></label>
-    <select id="sectionSelect" onchange="renderSelectedSection()">
-      <option>Loading sheets...</option>
-    </select>
+<!-- ... existing code ... -->
     <button id="syncBtn" onclick="syncData()">🔄 Sync Data</button>
     <button id="excelBtn" onclick="downloadExcel()">📥 Download Excel</button>
-    <button onclick="window.print()">🖨️ Print Document</button>
+    <button id="pdfBtn" onclick="downloadPDF()">📄 Download PDF</button>
+    <button onclick="printDocument()">🖨️ Print Document</button>
   </div>
 
   <!-- Document Template -->
-  <div class="document-page">
-    
-    <div class="header-container">
-      <img id="depedLogoImg" src="https://lh3.googleusercontent.com/d/1RW2RtUkRcctZZ607c7tOBu-cnykdm7Sg" class="logo" alt="DepEd Logo">
-      
-      <div class="center-text">
-        <p>Republic of the Philippines</p>
-        <p class="txt-deped">DEPARTMENT OF EDUCATION</p>
-        <p>Region V</p>
-        <p>Schools Division Office of Camarines Sur</p>
-        <p class="txt-school">IRAYA HIGH SCHOOL</p>
-        <p>School ID: 305484</p>
-        <p class="txt-sy">SY 2026-2027</p>
-        <p> </p>
-      </div>
+<!-- ... existing code ... -->
+```
 
-      <img id="schoolLogoImg" src="https://lh3.googleusercontent.com/d/1HXMORd--V37YKijjRXyBAgyePrGiq7Mb" class="logo" alt="School Logo">
-    </div>
+```html:Index.html:Index.html
+<!-- ... existing code ... -->
+      const element = document.querySelector('.document-page');
 
-    <div class="section-title" id="sectionTitle">
-      LOADING...
-    </div>
+      // Options for html2pdf
+      const opt = {
+        margin:       0, // Margins are handled by the CSS padding of .document-page
+        filename:     `Official_List_${selectedSheet}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { 
+          scale: 2, 
+          useCORS: true,
+          windowWidth: 1024 // Forces desktop A4 layout even inside a small Google Sites iframe!
+        },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
 
-    <div class="lists-container">
-      <div class="list-col">
-        <div class="list-header">Male</div>
-        <div id="maleList"></div>
-      </div>
-      <div class="list-col">
-        <div class="list-header">Female</div>
-        <div id="femaleList"></div>
-      </div>
-    </div>
+      // Generate the PDF
+      html2pdf().set(opt).from(element).save().then(() => {
+<!-- ... existing code ... -->
+```
 
-    <div class="footer">
-      <div class="signatory">
-        <!-- Replaced the empty line with the Adviser Name Display -->
-        <p class="name" id="adviserNameDisplay">&nbsp;</p>
-        <p class="title">Adviser</p>
-      </div>
-      <div class="signatory">
-        <p class="name">LALYN P. NEGRILLO</p>
-        <p class="title">Officer-in-Charge</p>
-      </div>
-    </div>
-
-  </div>
-
-  <script>
-    let globalData = {};
-
-    // 🔴 IMPORTANT: Make sure this is your active Google Apps Script Web App URL!
-    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbz9lsMEoxSdhndLKhQCdIEvPj4wNXrq-JzXyXsy4YGvSNQjcT5G0yDcHVNVnbw4x5ce/exec"; 
-
-    function getDirectImageUrl(url) {
-      if (!url) return "";
-      const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
-      if (match && match[1]) {
-        return "https://lh3.googleusercontent.com/d/" + match[1];
-      }
-      return url; 
-    }
-
-    window.onload = function() {
-      fetchData();
-    };
-
-    function syncData() {
-      const syncBtn = document.getElementById('syncBtn');
-      const originalText = syncBtn.innerHTML;
-      syncBtn.innerHTML = '⏳ Syncing...';
-      syncBtn.disabled = true;
-      
-      fetchData(() => {
-        syncBtn.innerHTML = originalText;
-        syncBtn.disabled = false;
-      });
-    }
-
-    function fetchData(callback) {
-      if (GAS_API_URL === "YOUR_GOOGLE_WEB_APP_URL_HERE") {
-         document.getElementById('sectionTitle').textContent = "ERROR: Setup Required";
-         document.getElementById('sectionSelect').innerHTML = '<option>Error</option>';
-         alert("You must replace YOUR_GOOGLE_WEB_APP_URL_HERE in the code with your actual Google Apps Script URL!");
-         if(callback) callback();
-         return;
-      }
-
-      fetch(GAS_API_URL)
-        .then(response => response.json())
-        .then(data => {
-          initializeData(data);
-          if(callback) callback();
-        })
-        .catch(error => {
-          console.error("Error fetching data:", error);
-          document.getElementById('sectionTitle').textContent = "NETWORK ERROR";
-          alert("Failed to connect to Google Sheets. Check your Web App URL and permissions.");
-          if(callback) callback();
-        });
-    }
-
-    function initializeData(data) {
-      globalData = data.sections || {};
-      
-      if (data.settings) {
-        if (data.settings.depedLogo) {
-          document.getElementById('depedLogoImg').src = getDirectImageUrl(data.settings.depedLogo);
-        }
-        if (data.settings.schoolLogo) {
-          document.getElementById('schoolLogoImg').src = getDirectImageUrl(data.settings.schoolLogo);
-        }
-      }
-
-      const select = document.getElementById('sectionSelect');
-      select.innerHTML = ''; 
-      
-      const sortedSheetNames = Object.keys(globalData).sort((a, b) => {
-        const getGradeNum = (name) => {
-          const match = name.match(/GRADE\s*(\d+)/i);
-          return match ? parseInt(match[1]) : 999; 
-        };
-        
-        const gradeA = getGradeNum(a);
-        const gradeB = getGradeNum(b);
-        
-        if (gradeA !== gradeB) {
-          return gradeA - gradeB; 
-        }
-        return a.localeCompare(b);
-      });
-
-      sortedSheetNames.forEach(sheetName => {
-        const option = document.createElement('option');
-        option.value = sheetName;
-        option.textContent = sheetName;
-        select.appendChild(option);
-      });
-      
-      if (sortedSheetNames.length > 0) {
-        renderSelectedSection();
-      } else {
-        document.getElementById('sectionTitle').textContent = "NO DATA FOUND";
-      }
-    }
-
-    function renderSelectedSection() {
-      const selectedSheet = document.getElementById('sectionSelect').value;
-      const data = globalData[selectedSheet];
-      if (!data) return;
-
-      document.getElementById('sectionTitle').textContent = selectedSheet;
-      
-      // Add Adviser Name visually
-      const adviserDisplay = document.getElementById('adviserNameDisplay');
-      adviserDisplay.textContent = data.adviser ? data.adviser : '\u00A0';
-      
-      const maleDiv = document.getElementById('maleList');
-      maleDiv.innerHTML = '';
-      data.males.forEach((name, index) => {
-        const p = document.createElement('p');
-        p.className = 'student-item';
-        p.textContent = `${index + 1}. ${name}`;
-        maleDiv.appendChild(p);
-      });
-
-      const femaleDiv = document.getElementById('femaleList');
-      femaleDiv.innerHTML = '';
-      data.females.forEach((name, index) => {
-        const p = document.createElement('p');
-        p.className = 'student-item';
-        p.textContent = `${index + 1}. ${name}`;
-        femaleDiv.appendChild(p);
-      });
-    }
-
-    async function downloadExcel() {
-      const selectedSheet = document.getElementById('sectionSelect').value;
-      const data = globalData[selectedSheet];
-      if (!data) return;
-
-      const btn = document.getElementById('excelBtn');
-      const originalText = btn.innerHTML;
-      btn.innerHTML = '⏳ Generating...';
-      btn.disabled = true;
-
-      try {
-        const wb = new ExcelJS.Workbook();
-        const wsName = selectedSheet.length > 31 ? selectedSheet.substring(0, 31) : selectedSheet;
-        const ws = wb.addWorksheet(wsName);
-
-        ws.columns = [
-          { width: 42 },
-          { width: 42 } 
-        ];
-
-        const addHeaderRow = (text, size, bold) => {
-          const row = ws.addRow([text]);
-          ws.mergeCells(`A${row.number}:B${row.number}`);
-          row.getCell(1).alignment = { horizontal: 'center', vertical: 'middle' };
-          row.getCell(1).font = { name: 'Arial', size: size, bold: bold };
-          return row;
-        };
-
-        addHeaderRow('Republic of the Philippines', 11, false);
-        addHeaderRow('DEPARTMENT OF EDUCATION', 12, true);
-        addHeaderRow('Region V', 11, false);
-        addHeaderRow('Schools Division Office of Camarines Sur', 11, false);
-        addHeaderRow('IRAYA HIGH SCHOOL', 13, true);
-        addHeaderRow('School ID: 305484', 11, false);
-        addHeaderRow('SY 2026-2027', 11, false);
-        addHeaderRow('#Buhi Camarines Sur', 11, false);
-        
-        ws.addRow([]); 
-        addHeaderRow(selectedSheet, 12, true);
-        ws.addRow([]); 
-
-        const listHeader = ws.addRow(['Male', 'Female']);
-        listHeader.font = { name: 'Arial', size: 11, bold: true };
-        listHeader.getCell(1).border = { bottom: { style: 'thin' } };
-        listHeader.getCell(2).border = { bottom: { style: 'thin' } };
-
-        const maxLen = Math.max(data.males.length, data.females.length);
-        for(let i = 0; i < maxLen; i++) {
-          const maleName = data.males[i] ? `${i + 1}. ${data.males[i]}` : '';
-          const femaleName = data.females[i] ? `${i + 1}. ${data.females[i]}` : '';
-          const row = ws.addRow([maleName, femaleName]);
-          row.font = { name: 'Arial', size: 11 };
-        }
-
-        ws.addRow([]); 
-        ws.addRow([]); 
-        ws.addRow([]); 
-
-        // Add dynamically updated Adviser Name to Excel
-        const adviserNameExcel = data.adviser ? data.adviser.toUpperCase() : '';
-        const sigNameRow = ws.addRow([adviserNameExcel, 'LALYN P. NEGRILLO']);
-        sigNameRow.getCell(1).alignment = { horizontal: 'center' };
-        sigNameRow.getCell(1).font = { name: 'Arial', size: 11, bold: true };
-        sigNameRow.getCell(2).alignment = { horizontal: 'center' };
-        sigNameRow.getCell(2).font = { name: 'Arial', size: 11, bold: true };
-
-        const sigTitleRow = ws.addRow(['Adviser', 'Officer-in-Charge']);
-        sigTitleRow.font = { name: 'Arial', size: 10 };
-        sigTitleRow.getCell(1).alignment = { horizontal: 'center' };
-        sigTitleRow.getCell(1).border = { top: { style: 'thin' } };
-        sigTitleRow.getCell(2).alignment = { horizontal: 'center' };
-        sigTitleRow.getCell(2).border = { top: { style: 'thin' } };
-
-        const buffer = await wb.xlsx.writeBuffer();
-        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        saveAs(blob, `Official_List_${selectedSheet}.xlsx`);
-
-      } catch (error) {
-        console.error("Excel generation failed:", error);
-        alert("Failed to generate Excel file.");
-      } finally {
+```html:Index.html:Index.html
+<!-- ... existing code ... -->
+      html2pdf().set(opt).from(element).save().then(() => {
         btn.innerHTML = originalText;
         btn.disabled = false;
-      }
+      }).catch(error => {
+        console.error("PDF generation failed:", error);
+        alert("Failed to generate PDF file. Please try again.");
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      });
+    }
+
+    function printDocument() {
+      // When embedded in Google Sites (iframe), focusing the window helps trigger the print dialog properly
+      window.focus();
+      window.print();
     }
   </script>
 </body>
