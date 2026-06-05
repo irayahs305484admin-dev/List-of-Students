@@ -154,11 +154,6 @@
       padding-top: 2px !important;
       font-size: 10pt;
     }
-    .adviser-line {
-      border-bottom: 1px solid #000;
-      height: 20px;
-      margin-bottom: 2px;
-    }
 
     /* Responsive adjustments for mobile screens */
     @media screen and (max-width: 600px) {
@@ -251,7 +246,8 @@
 
     <div class="footer">
       <div class="signatory">
-        <div class="adviser-line"></div>
+        <!-- Replaced the empty line with the Adviser Name Display -->
+        <p class="name" id="adviserNameDisplay">&nbsp;</p>
         <p class="title">Adviser</p>
       </div>
       <div class="signatory">
@@ -265,7 +261,7 @@
   <script>
     let globalData = {};
 
-    // 🔴 IMPORTANT: Replace this URL with your new Google Apps Script Web App URL!
+    // 🔴 IMPORTANT: Make sure this is your active Google Apps Script Web App URL!
     const GAS_API_URL = "https://script.google.com/macros/s/AKfycbz9lsMEoxSdhndLKhQCdIEvPj4wNXrq-JzXyXsy4YGvSNQjcT5G0yDcHVNVnbw4x5ce/exec"; 
 
     function getDirectImageUrl(url) {
@@ -293,7 +289,6 @@
       });
     }
 
-    // UPDATED: Now uses standard JS fetch API instead of google.script.run
     function fetchData(callback) {
       if (GAS_API_URL === "YOUR_GOOGLE_WEB_APP_URL_HERE") {
          document.getElementById('sectionTitle').textContent = "ERROR: Setup Required";
@@ -367,6 +362,10 @@
       if (!data) return;
 
       document.getElementById('sectionTitle').textContent = selectedSheet;
+      
+      // Add Adviser Name visually
+      const adviserDisplay = document.getElementById('adviserNameDisplay');
+      adviserDisplay.textContent = data.adviser ? data.adviser : '\u00A0';
       
       const maleDiv = document.getElementById('maleList');
       maleDiv.innerHTML = '';
@@ -443,8 +442,11 @@
         ws.addRow([]); 
         ws.addRow([]); 
 
-        const sigNameRow = ws.addRow(['', 'LALYN P. NEGRILLO']);
+        // Add dynamically updated Adviser Name to Excel
+        const adviserNameExcel = data.adviser ? data.adviser.toUpperCase() : '';
+        const sigNameRow = ws.addRow([adviserNameExcel, 'LALYN P. NEGRILLO']);
         sigNameRow.getCell(1).alignment = { horizontal: 'center' };
+        sigNameRow.getCell(1).font = { name: 'Arial', size: 11, bold: true };
         sigNameRow.getCell(2).alignment = { horizontal: 'center' };
         sigNameRow.getCell(2).font = { name: 'Arial', size: 11, bold: true };
 
