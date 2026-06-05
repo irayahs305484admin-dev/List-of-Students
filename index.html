@@ -48,7 +48,7 @@
       
       const maleDiv = document.getElementById('maleList');
       maleDiv.innerHTML = '';
-<!-- ... existing code ... -->
+      data.males.forEach(name => {
         const maxLen = Math.max(data.males.length, data.females.length);
         for(let i = 0; i < maxLen; i++) {
           const row = ws.addRow([data.males[i] || '', data.females[i] || '']);
@@ -62,10 +62,10 @@
         const adviserNameText = data.adviser && data.adviser.trim() !== "" ? data.adviser : '';
         const sigNameRow = ws.addRow([adviserNameText, 'LALYN P. NEGRILLO']);
         sigNameRow.getCell(1).alignment = { horizontal: 'center' };
-        sigNameRow.getCell(1).font = { name: 'Arial', size: 11, bold: true };
         sigNameRow.getCell(2).alignment = { horizontal: 'center' };
+        sigNameRow.getCell(1).font = { name: 'Arial', size: 11, bold: true };
         sigNameRow.getCell(2).font = { name: 'Arial', size: 11, bold: true };
 
         const sigTitleRow = ws.addRow(['Adviser', 'Officer-in-Charge']);
         sigTitleRow.font = { name: 'Arial', size: 10 };
-<!-- ... existing code ... -->
+        sigTitleRow.getCell(1).alignment = { horizontal: 'center' };
