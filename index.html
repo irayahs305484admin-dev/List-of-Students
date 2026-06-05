@@ -369,19 +369,19 @@
       
       const maleDiv = document.getElementById('maleList');
       maleDiv.innerHTML = '';
-      data.males.forEach(name => {
+      data.males.forEach((name, index) => {
         const p = document.createElement('p');
         p.className = 'student-item';
-        p.textContent = name;
+        p.textContent = `${index + 1}. ${name}`;
         maleDiv.appendChild(p);
       });
 
       const femaleDiv = document.getElementById('femaleList');
       femaleDiv.innerHTML = '';
-      data.females.forEach(name => {
+      data.females.forEach((name, index) => {
         const p = document.createElement('p');
         p.className = 'student-item';
-        p.textContent = name;
+        p.textContent = `${index + 1}. ${name}`;
         femaleDiv.appendChild(p);
       });
     }
@@ -434,7 +434,9 @@
 
         const maxLen = Math.max(data.males.length, data.females.length);
         for(let i = 0; i < maxLen; i++) {
-          const row = ws.addRow([data.males[i] || '', data.females[i] || '']);
+          const maleName = data.males[i] ? `${i + 1}. ${data.males[i]}` : '';
+          const femaleName = data.females[i] ? `${i + 1}. ${data.females[i]}` : '';
+          const row = ws.addRow([maleName, femaleName]);
           row.font = { name: 'Arial', size: 11 };
         }
 
